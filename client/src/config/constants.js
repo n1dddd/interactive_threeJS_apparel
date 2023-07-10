@@ -1,6 +1,8 @@
+//This file is to import all constant static assets
+
 import { swatch, fileIcon, ai, logoShirt, stylishShirt } from "../assets";
 
-export const EditorTabs = [
+export const EditorTabs = [ //map over array of objects to source constant variable
   {
     name: "colorpicker",
     icon: swatch,
