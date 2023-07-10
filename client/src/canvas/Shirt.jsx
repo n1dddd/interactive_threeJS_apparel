@@ -15,8 +15,13 @@ const Shirt = () => {
     const logoTexture = useTexture(snap.logoDecal) //set to state values
     const fullTexture = useTexture(snap.fullDecal);
 
+    useFrame((state, delta) => easing.dampC(materials.lambert1.color, snap.color, 0.25, delta))
+
+    //to make sure that the react app is tracking the shirts color state
+    const stateString = JSON.stringify(snap)
+
   return (
-    <group>
+    <group key={stateString}>
         <mesh //add a threejs mesh 
             castShadow
             geometry={nodes.T_Shirt_male.geometry} //fill mesh with model properties
@@ -24,6 +29,26 @@ const Shirt = () => {
             material-roughness={1}
             dispose={null}
         >
+            {snap.isFullTexture && (
+                <Decal 
+                    position={[0, 0, 0]}
+                    rotation={[0, 0, 0]}
+                    scale={1}
+                    map={fullTexture}
+                />
+            )}
+
+            {snap.isLogoTexture && (
+                <Decal 
+                    position={[0, 0.04, 0.15]}
+                    rotation={[0, 0, 0]}
+                    scale={0.15}
+                    map={logoTexture}
+                    anisotropy={16}
+                    depthTest={false}
+                    depthWrite={true}
+                />
+            )}
         </mesh>
     </group>
   )
