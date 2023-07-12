@@ -30,7 +30,11 @@ const Customizer = () => {
             case "colorpicker":
                 return <ColorPicker />
             case "filepicker":
-                return <FilePicker />
+                return <FilePicker 
+                    file={file}
+                    setFile={setFile}
+                    readFile={readFile}
+                />
             case "aipicker":
                 return <AIPicker />
             default:
@@ -38,6 +42,60 @@ const Customizer = () => {
         }
     }
 
+    /*
+    Read passed in file from filepicker component.
+    Then the result is passed into handleDecals.
+    This can be either logo or full, based on the
+    button pressed upon upload. handleDecals will 
+    assign a variable to the type, the type will be 
+    found in state, and set to the new type (result).
+    Finally handleActive filters is checked to see 
+    if active (the filter type, so being logo or full),
+    and sets the filter type to the one chosen in the 
+    file upload tab 
+    */
+    const readFile = (type) => {
+        reader(file)
+        .then((result) => {
+            handleDecals(type, result);
+            setActiveEditorTab("");
+        })
+    }
+
+    const handleDecals = (type, result) => {
+
+        //set the passed img file type to 
+        const decalType = DecalTypes[type];
+
+        state[decalType.stateProperty] = result;
+
+        if(!activeFilterTab[decalType.filterTab]) {
+            handleActiveFilterTab(decalType.filterTab);
+        }
+    }
+
+    const handleActiveFilterTab = (tabName) => {
+        switch (tabName) {
+            case "logoShirt":
+                state.isLogoTexture = !activeFilterTab[tabName];
+                break;
+            case "stylishShirt":
+                state.isFullTexture = !activeFilterTab[tabName];
+                break;
+            default:
+                state.isFullTexture = true;
+                state.isLogoTexture = false;
+        }
+
+        //after setting the state, activeFilterTab is updated
+
+        setactiveFilterTab((prevState) => {
+            return {
+                ...prevState,
+                [tabName]: !prevState[tabName]
+            }
+        })
+    }
     return (
         <AnimatePresence>
             {!snap.intro && (
@@ -83,8 +141,8 @@ const Customizer = () => {
                                 key={tab.name}
                                 tab={tab}
                                 isFilterTab
-                                isActiveTab=""
-                                handleClick={() => { }}
+                                isActiveTab={activeFilterTab[tab.name]}
+                                handleClick={() => handleActiveFilterTab(tab.name)}
                             >
                             </Tab>
                         ))}
