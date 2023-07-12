@@ -17,7 +17,9 @@ export const reader = (file) =>
     fileReader.readAsDataURL(file);
   });
 
-export const getContrastingColor = (color) => {
+//chatGPT generated function to get the color contrasting to the argument, based on brightness
+
+  export const getContrastingColor = (color) => {
   // Remove the '#' character if it exists
   const hex = color.replace("#", "");
 
